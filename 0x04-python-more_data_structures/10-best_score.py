@@ -1,3 +1,10 @@
 !/usr/bin/python3
 def best_score(a_dictionary):
-    return max(a_dictionary, key=a_dictionary.get) if a_dictionary else None
+    if a_dictionary is None or not a_dictionary:
+        return None
+
+    max_score = max(a_dictionary.values())
+
+    for key, value in a_dictionary.items():
+        if value == max_score:
+            return key
