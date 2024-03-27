@@ -3,14 +3,30 @@
 
 
 def find_peak(list_of_integers):
-    """finds a peak in a list of unsorted integers"""
-    li = list_of_integers
-    l = len(li)
-    if l == 0:
-        return
-    m = l // 2
-    if (m == l - 1 or li[m] >= li[m + 1]) and (m == 0 or li[m] >= li[m - 1]):
-        return li[m]
-    if m != l - 1 and li[m + 1] > li[m]:
-        return find_peak(li[m + 1:])
-    return find_peak(li[:m])
+    """
+    Finds a peak in a list of unsorted integers.
+
+    Args:
+        list_of_integers (list): List of unsorted integers.
+
+    Returns:
+        int: Peak element.
+
+    Complexity:
+        O(log(n)) - The algorithm uses a binary search approach to find a peak.
+    """
+
+    if not list_of_integers:
+        return None
+
+    left, right = 0, len(list_of_integers) - 1
+
+    while left < right:
+        mid = (left + right) // 2
+        if list_of_integers[mid] < list_of_integers[mid + 1]:
+            left = mid + 1
+        else:
+            right = mid
+
+    return list_of_integers[left]
+
