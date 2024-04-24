@@ -1,35 +1,26 @@
 #!/usr/bin/node
 
-const fetch = require('node-fetch');
-const process = require('process');
+#!/usr/bin/node
+const request = require('request');
+const episodeId = process.argv[2];
+const url = 'http://swapi.co/api/films/' + episodeId;
 
-async function getCharacters(movieId) {
-    try {
-        const response = await fetch(`https://swapi-api.alx-tools.com/films/${movieId}/`);
-        if (!response.ok) {
-            throw new Error(`Failed to fetch movie data: ${response.status}`);
-        }
-        const data = await response.json();
-        const characters = data.characters;
-        for (const characterUrl of characters) {
-            const characterResponse = await fetch(characterUrl);
-            if (!characterResponse.ok) {
-                throw new Error(`Failed to fetch character data: ${characterResponse.status}`);
-            }
-            const characterData = await characterResponse.json();
-            console.log(characterData.name);
-        }
-    } catch (error) {
-        console.error(error.message);
-        process.exit(1);
+function listCharacters (url) {
+  request(url, function (error, response, body) {
+    if (error) {
+      console.log(error);
+    } else {
+      let charList = JSON.parse(body).characters;
+      for (let j = 0; j < charList.length; j++) {
+        request(charList[j], function (error, response, body) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log(JSON.parse(body).name);
+          }
+        });
+      }
     }
+  });
 }
-
-if (process.argv.length < 3) {
-    console.error("Usage: node script.js <movie_id>");
-    process.exit(1);
-}
-
-const movieId = process.argv[2];
-getCharacters(movieId);
-
+listCharacters(url);
